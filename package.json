@@ -1,0 +1,23 @@
+{
+  "name": "shade-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "dependencies": {
+    "@slack/rtm-api": "^5.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streckc/shade-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/streckc/shade-bot/issues"
+  },
+  "homepage": "https://github.com/streckc/shade-bot#readme"
+}
