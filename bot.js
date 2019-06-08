@@ -7,14 +7,16 @@ const exec = util.promisify(require('child_process').exec);
 const token = process.env.SLACK_BOT_TOKEN;
 const hostname = os.hostname();
 
+var global_channel = null;
+
 const rtm = new RTMClient(token, {
   logLevel: LogLevel.INFO
 });
 
 async function say(text, channel) {
-  if (!channel) return;
+  if (!channel) channel = global_channel;
   try {
-    const reply = await rtm.sendMessage(text, channel)
+    const reply = await rtm.sendMessage(hostname + ': ' + text, channel)
     console.log(reply.ts, 'message sent:', reply.text);
   } catch (error) {
     console.error('An error occurred', error);
@@ -23,14 +25,23 @@ async function say(text, channel) {
 
 async function dispatch_command(event) {
   //var command = parse_command(event.text);
-  if (event.text.match(/^!who$/)) { say(hostname + ' here!', event.channel); }
+  global_channel = event.channel;
+  if (event.text.match(/^!who$/)) { say('Here!', event.channel); }
   else if (event.text.match(/^!update$/)) { update_code(); }
+  else if (event.text.match(/^!uptime$/)) { uptime(); }
 }
 
-async function update_code() {
-  const { stdout, stderr } = await exec('git pull');
+async function run_command(command) {
+  const { stdout, stderr } = await exec(command);
   console.log('stdout:', stdout);
   console.log('stderr:', stderr);
+  return { stdout, stderr };
+}
+
+async function update_code() { await run_command('git pull'); }
+async function uptime() {
+  const { stdout, stderr } =  await run_command('uptime');
+  say(stdout);
 }
 
 // Attach listeners to events by type. See: https://api.slack.com/events/message
