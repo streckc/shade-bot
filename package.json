@@ -6,10 +6,14 @@
   "dependencies": {
     "@slack/rtm-api": "^5.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4"
+  },
   "scripts": {
     "start": "nodemon bot.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-watch": "nodemon node_modules/mocha/bin/mocha \"**/*.test.js\"",
+    "test": "node node_modules/mocha/bin/mocha \"**/*.test.js\""
   },
   "repository": {
     "type": "git",

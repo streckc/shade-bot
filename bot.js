@@ -2,6 +2,7 @@ const os = require('os');
 const { RTMClient, LogLevel } = require('@slack/rtm-api');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const { parseCommand } = require('./lib/command_parse');
 
 
 const token = process.env.SLACK_BOT_TOKEN;
@@ -23,12 +24,10 @@ async function say(text, channel) {
   }
 }
 
-async function dispatch_command(event) {
-  //var command = parse_command(event.text);
-  global_channel = event.channel;
-  if (event.text.match(/^!who$/)) { say('Here!', event.channel); }
-  else if (event.text.match(/^!update$/)) { update_code(); }
-  else if (event.text.match(/^!uptime$/)) { uptime(); }
+async function dispatch_command(command) {
+  if (command.command == 'who') { say('Here!'); }
+  else if (command.command == 'update') { update_code(); }
+  else if (command.command == 'uptime') { uptime(); }
 }
 
 async function run_command(command) {
@@ -46,8 +45,10 @@ async function uptime() {
 
 // Attach listeners to events by type. See: https://api.slack.com/events/message
 rtm.on('message', (event) => {
+  global_channel = event.channel;
   console.log(event.ts + ' ' + event.type + ' recieved:', event.text);
-  if (event.text && event.text.match(/^![a-z]+/)) { dispatch_command(event); }
+  const command = parseCommand(event.text);
+  if (command && command.isFor(hostname)) { dispatch_command(command); }
 });
 
 //rtm.on('hello', (event) => {
