@@ -20,7 +20,10 @@ const loadPlugins = () => {
       try {
         const mod = require(pluginDir + '/' + name);
         if (mod.isCapable()) {
-          globalCommands[name] = mod.execPlugin;
+          globalCommands[name] = {
+            exec: mod.execPlugin,
+            help: mod.helpPlugin
+          };
         }
         console.log('Loaded ' + name);
       } catch(err) {
@@ -49,7 +52,7 @@ rtm.on('message', async (event) => {
   const command = parseCommand(event.text);
   if (command && command.isFor(hostname)) {
     if (globalCommands[command.command]) {
-      await globalCommands[command.command](command.args, event);
+      await globalCommands[command.command].exec(command.args, event);
     }
   }
 });
@@ -63,5 +66,6 @@ rtm.on('ready', async (event) => {
 })();
 
 module.exports = {
-  say
+  say,
+  globalCommands
 }

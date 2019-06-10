@@ -11,7 +11,12 @@ const execPlugin = async (args, event) => {
     say('Error in update; ' + stderr, event.channel);
 }
 
+const helpPlugin = async (event) => {
+  return 'Update the code for the bot from the git repository.';
+}
+
 module.exports = {
   isCapable,
-  execPlugin
+  execPlugin,
+  helpPlugin
 }

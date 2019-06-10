@@ -8,7 +8,12 @@ const execPlugin = async (args, event) => {
   say(stdout, event.channel);
 }
 
+const helpPlugin = async (event) => {
+  return 'Displays the uptime statistics for the bot host.';
+}
+
 module.exports = {
   isCapable,
-  execPlugin
+  execPlugin,
+  helpPlugin
 }
