@@ -9,9 +9,7 @@ const { runCommand } = require('./lib/run_command');
 const token = process.env.SLACK_BOT_TOKEN;
 const hostname = os.hostname();
 
-const globalCommands = {
-  who: async (args, event) => { await say('Here!', event.channel); }
-};
+const globalCommands = {};
 
 const loadPlugins = () => {
   const pluginDir = './plugins';
