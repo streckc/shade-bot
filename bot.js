@@ -12,7 +12,7 @@ const loadPlugins = () => {
   const pluginDir = './plugins';
 
   readdirSync(pluginDir).forEach((file) => {
-    if (file.match(/\.js$/)) {
+    if (file.match(/\.js$/) && !file.match(/\.test\.js$/)) {
       const name = file.replace(/\.js$/, '');
       try {
         const mod = require(pluginDir + '/' + name);
