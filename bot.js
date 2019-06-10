@@ -22,7 +22,7 @@ const loadPlugins = () => {
             help: mod.helpPlugin
           };
         }
-        console.log('Loaded ' + name);
+        console.log('Plugin loaded ' + name);
       } catch(err) {
         console.log('Error loading ' + pluginDir + '/' + file);
         console.log('     ' + err);
