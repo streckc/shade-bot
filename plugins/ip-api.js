@@ -13,7 +13,7 @@ const isCapable = () => {
 }
 
 const execPlugin = async (args, event) => {
-  const response = await axios.get('http://ip-api.com/json');
+  const response = await axios.get('http://ip-api.com/json?fields=59350');
   // as, city, country, countryCode, isp, lat, lon, org, query, region,
   // regionName, status, timesone, zip
   let text = response.data.query;
@@ -22,6 +22,7 @@ const execPlugin = async (args, event) => {
   text += ', ' + response.data.region;
   text += ', ' + response.data.countryCode;
   say(text, event.channel);
+  console.log(response.data);
 }
 
 const helpPlugin = async (event) => {
