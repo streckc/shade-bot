@@ -1,14 +1,11 @@
-const os = require('os');
 const { RTMClient, LogLevel } = require('@slack/rtm-api');
 const { readdirSync } = require('fs');
 
 const { parseCommand } = require('./lib/command_parse');
 const { runCommand } = require('./lib/run_command');
+const { readConfig } = require('./lib/config');
 
-
-const token = process.env.SLACK_BOT_TOKEN;
-const hostname = os.hostname();
-
+const config = readConfig(['config.json', '/etc/bot-config.json']);
 const globalCommands = {};
 
 const loadPlugins = () => {
@@ -34,13 +31,13 @@ const loadPlugins = () => {
   });
 }
 
-const rtm = new RTMClient(token, {
+const rtm = new RTMClient(config.token, {
   logLevel: LogLevel.INFO
 });
 
 async function say(text, channel) {
   try {
-    const reply = await rtm.sendMessage(hostname + ': ' + text, channel)
+    const reply = await rtm.sendMessage(config.hostname + ': ' + text, channel)
     console.log(reply.ts, 'message sent:', reply.text, 'channel:', channel);
   } catch (error) {
     console.error('An error occurred', error);
@@ -50,7 +47,7 @@ async function say(text, channel) {
 rtm.on('message', async (event) => {
   console.log(event.ts + ' ' + event.type + ' recieved:', event.text);
   const command = parseCommand(event.text);
-  if (command && command.isFor(hostname)) {
+  if (command && command.isFor(config.hostname)) {
     if (globalCommands[command.command]) {
       await globalCommands[command.command].exec(command.args, event);
     }
@@ -67,5 +64,6 @@ rtm.on('ready', async (event) => {
 
 module.exports = {
   say,
-  globalCommands
+  globalCommands,
+  config
 }

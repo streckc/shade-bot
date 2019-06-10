@@ -8,7 +8,8 @@ const execPlugin = async (args, event) => {
   } else {
     const cmd = args[0];
     if (globalCommands[cmd]) { 
-      say(await globalCommands[cmd].help(), event.channel);
+      const text = await globalCommands[cmd].help();
+      say(cmd + ': ' + text);
     } else {
       say('No known help for ' + cmd, event.channel);
     }
