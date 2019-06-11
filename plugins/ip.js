@@ -22,7 +22,6 @@ const execPlugin = async (args, event) => {
   text += ', ' + response.data.region;
   text += ', ' + response.data.countryCode;
   say(text, event.channel);
-  console.log(response.data);
 }
 
 const helpPlugin = async (event) => {

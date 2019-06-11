@@ -38,16 +38,16 @@ const rtm = new RTMClient(config.token, {
 async function say(text, channel) {
   try {
     const reply = await rtm.sendMessage(config.hostname + ': ' + text, channel)
-    console.log(reply.ts, 'message sent:', reply.text, 'channel:', channel);
+    console.log('message sent: ' + reply.text + ', channel: ' + channel);
   } catch (error) {
     console.error('An error occurred', error);
   }
 }
 
 rtm.on('message', async (event) => {
-  console.log(event.ts + ' ' + event.type + ' recieved:', event.text);
   const command = parseCommand(event.text);
   if (command && command.isFor(config.hostname)) {
+    console.log('command ' + event.type + ': ' + event.text);
     if (globalCommands[command.command]) {
       await globalCommands[command.command].exec(command.args, event);
     }
