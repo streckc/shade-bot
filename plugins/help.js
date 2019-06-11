@@ -1,17 +1,14 @@
 const { say } = require('../lib/slack');
+const { getCommandList, getCommandHelp } = require('../lib/commands');
 
 const isCapable = () => { return true; }
 
 const execPlugin = async (args, event, config) => {
   if (args.length < 1) {
-    say('Commands: ' + Object.keys(globalCommands).sort().join(', '), event.channel, config);
+    say('Commands: ' + getCommandList().sort().join(', '), event.channel, config);
   } else {
-    const cmd = args[0];
-    if (globalCommands[cmd]) { 
-      const text = await globalCommands[cmd].help();
-      say(cmd + ': ' + text, event.channel, config);
-    } else {
-      say('No known help for ' + cmd, event.channel, config);
+    for (let x = 0; x < args.length; x++) {
+      say(args[x] + ': ' + await getCommandHelp(args[x]), event.channel, config);
     }
   }
 }
