@@ -1,4 +1,5 @@
 const { RTMClient, LogLevel } = require('@slack/rtm-api');
+const { WebClient } = require('@slack/web-api');
 const { readdirSync } = require('fs');
 
 const { parseCommand } = require('./lib/command_parse');
@@ -31,14 +32,17 @@ const loadPlugins = () => {
   });
 }
 
-const rtm = new RTMClient(config.token, {
-  logLevel: LogLevel.INFO
-});
+const rtm = new RTMClient(config.token, { logLevel: LogLevel.INFO });
+const web = new WebClient(config.token);
 
 async function say(text, channel) {
   try {
-    const reply = await rtm.sendMessage(config.hostname + ': ' + text, channel)
-    console.log('message sent: ' + reply.text + ', channel: ' + channel);
+    const reply = await web.chat.postMessage({
+      channel: channel,
+      text: config.hostname + ': ' + text,
+      as_user: true
+    });
+    console.log('sent: ' + reply.message.text);
   } catch (error) {
     console.error('An error occurred', error);
   }
@@ -56,6 +60,7 @@ rtm.on('message', async (event) => {
 
 rtm.on('ready', async (event) => {
   loadPlugins();
+  say('ready', '#monitoring');
 });
 
 (async () => {
