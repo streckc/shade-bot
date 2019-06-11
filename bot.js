@@ -1,74 +1,28 @@
 const { RTMClient, LogLevel } = require('@slack/rtm-api');
 const { WebClient } = require('@slack/web-api');
+
 const { readdirSync } = require('fs');
 
 const { parseCommand } = require('./lib/command_parse');
 const { runCommand } = require('./lib/run_command');
 const { readConfig } = require('./lib/config');
+const { loadPlugins, dispatchCommand } = require('./lib/commands');
+const { say, saveConnections } = require('./lib/slack');
 
 const config = readConfig(['config.json', '/etc/bot-config.json']);
-const globalCommands = {};
-
-const loadPlugins = () => {
-  const pluginDir = './plugins';
-
-  readdirSync(pluginDir).forEach((file) => {
-    if (file.match(/\.js$/) && !file.match(/\.test\.js$/)) {
-      const name = file.replace(/\.js$/, '');
-      try {
-        const mod = require(pluginDir + '/' + name);
-        if (mod.isCapable()) {
-          globalCommands[name] = {
-            exec: mod.execPlugin,
-            help: mod.helpPlugin
-          };
-        }
-        console.log('Plugin loaded ' + name);
-      } catch(err) {
-        console.log('Error loading ' + pluginDir + '/' + file);
-        console.log('     ' + err);
-      }
-    }
-  });
-}
 
 const rtm = new RTMClient(config.token, { logLevel: LogLevel.INFO });
 const web = new WebClient(config.token);
 
-async function say(text, channel) {
-  try {
-    const reply = await web.chat.postMessage({
-      channel: channel,
-      text: config.hostname + ': ' + text,
-      as_user: true
-    });
-    console.log('sent: ' + reply.message.text);
-  } catch (error) {
-    console.error('An error occurred', error);
-  }
-}
+saveConnections(rtm, web);
 
 rtm.on('message', async (event) => {
-  const command = parseCommand(event.text);
-  if (command && command.isFor(config.hostname)) {
-    console.log('command ' + event.type + ': ' + event.text);
-    if (globalCommands[command.command]) {
-      await globalCommands[command.command].exec(command.args, event);
-    }
-  }
+  await dispatchCommand(event, config);
 });
 
 rtm.on('ready', async (event) => {
-  loadPlugins();
-  say('ready', '#monitoring');
+  loadPlugins('./plugins');
+  say('ready', '#bot_comm', config);
 });
 
-(async () => {
-  await rtm.start();
-})();
-
-module.exports = {
-  say,
-  globalCommands,
-  config
-}
+(async () => { await rtm.start(); })();

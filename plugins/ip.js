@@ -1,6 +1,6 @@
-const axios = require('axios');
+const { say } = require('../lib/slack');
 
-const { say } = require('../bot.js');
+const axios = require('axios');
 
 const isCapable = () => {
   try {
@@ -12,7 +12,7 @@ const isCapable = () => {
   return false;
 }
 
-const execPlugin = async (args, event) => {
+const execPlugin = async (args, event, config) => {
   const response = await axios.get('http://ip-api.com/json?fields=59350');
   // as, city, country, countryCode, isp, lat, lon, org, query, region,
   // regionName, status, timesone, zip
@@ -21,7 +21,7 @@ const execPlugin = async (args, event) => {
   text += ' @ ' + response.data.city;
   text += ', ' + response.data.region;
   text += ', ' + response.data.countryCode;
-  say(text, event.channel);
+  say(text, event.channel, config);
 }
 
 const helpPlugin = async (event) => {
