@@ -1,10 +1,16 @@
 #!/bin/bash
 
+USER="pi"
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+GROUP="nogroup"
+
 SERVICE_PATH="/etc/systemd/system"
 SERVICE_FILE="shade-bot.service"
 SERVICE_NAME="$(echo $SERVICE_FILE | cut -f1 -d.)"
 INSTALL_PATH="$(cd $(dirname $0) && pwd)"
 RUN_PATH="$(dirname $INSTALL_PATH)"
+
+TMP="/tmp/$$.install"
 
 if [ ! -d "$RUN_PATH" ]; then
   echo "ERROR: Run path not found."
@@ -27,7 +33,11 @@ elif [ -f "$SERVICE_PATH/$SERVICE_FILE" -a "X$1" != "X-f" ]; then
   exit 5
 fi
 
-sed -e "s#__INSTALL_DIR__#$RUN_PATH#g" "$INSTALL_PATH/$SERVICE_FILE" > "$SERVICE_PATH/$SERVICE_FILE"
+sed -e "s#__INSTALL_DIR__#$RUN_PATH#g" "$INSTALL_PATH/$SERVICE_FILE" > "$TMP"
+sed -e "s#__USER__#$NODE_USER#g" "$TMP" > "$TMP"
+sed -e "s#__GROUP__#$NODE_GROUP#g" "$TMP" > "$TMP"
+
+mv "$TMP" "$SERVICE_PATH/$SERVICE_FILE"
 
 systemctl enable $SERVICE_NAME
 systemctl start $SERVICE_NAME
