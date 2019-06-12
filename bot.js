@@ -1,3 +1,5 @@
+#!/usr/bin/env nodemon
+
 const { RTMClient, LogLevel } = require('@slack/rtm-api');
 const { WebClient } = require('@slack/web-api');
 
