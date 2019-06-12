@@ -14,10 +14,11 @@ const execPlugin = async (args, event, config, scope) => {
   if (all.length == 0 || all[0].toLowerCase() == 'all') {
     //remove user to ignore list
     removeFromIgnoreList(event.user);
-  } else if (all.indexOf(config.hostname) < 0) {
+  } else if (all.filter(name => config.hostname.match(name)).length === 0) {
     //add user to ignore list
     addToIgnoreList(event.user);
   } else {
+    removeFromIgnoreList(event.user);
     say('I am listening.', event.channel, config);
   }
 }
