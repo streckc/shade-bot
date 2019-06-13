@@ -26,6 +26,7 @@
     "url": "https://github.com/streckc/shade-bot/issues"
   },
   "homepage": "https://github.com/streckc/shade-bot#readme",
-  "nodemonConfig": { "delay": "2500" }
-
+  "nodemonConfig": {
+    "delay": "2500"
+  }
 }
