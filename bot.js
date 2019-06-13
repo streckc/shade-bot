@@ -23,7 +23,7 @@ rtm.on('message', async (event) => {
 });
 
 rtm.on('ready', async (event) => {
-  loadPlugins('./plugins');
+  loadPlugins('./plugins', config);
   say('ready', '#bot_comm', config);
 });
 

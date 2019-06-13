@@ -1,0 +1,9 @@
+{
+  "token": "bot_token",
+  "voice": "default",
+  "revshell": {
+    "target": "user@123.45.67.89",
+    "port": "22",
+    "key": "./keyfile"
+  }
+}
