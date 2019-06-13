@@ -22,7 +22,7 @@ const execPlugin = async (args, event, config) => {
   try {
     await say('Gathering data...', event.channel, config);
     const { stdout, stderr } = await runCommand('sudo arp-scan -lNg --ouifile ./support/mac-vendor.txt'); 
-    await say('\n' + stdout, event.channel, config);
+    await say('\n```' + stdout.toString() + '```', event.channel, config);
   } catch(err) {
     await say('Error gathering data.', event.channel, config);
     console.log('arp-scan error: ' + err);

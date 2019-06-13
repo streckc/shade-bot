@@ -10,12 +10,12 @@ const execPlugin = async (args, event, config) => {
 
   if (await isShellRunning()) isRevRunning = 'Yes';
 
-  let text = '\n  Name : ' + config.hostname;
-  text += '\n  Voice : ' + config.voice;
+  let text = '\n```  Voice : ' + config.voice;
   text += '\n  RevShell : ' + isRevRunning;
   text += '\n  Ignoring : ' + ignoreList.join(', ');
   text += '\n  Arch : ' + process.arch;
   text += '\n  Memory : ' + (Math.round(used.rss / 1024 / 1024 * 100) / 100) + ' MB';
+  text += '```';
 
   say(text, event.channel, config);
 }

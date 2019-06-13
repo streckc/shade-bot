@@ -25,6 +25,8 @@ const isCapable = async (config) => {
     sshPath,
     '-p ' + config.revshell.port,
     '-i ' + config.revshell.key,
+    '-o UserKnownHostsFile=/dev/null',
+    '-o StrictHostKeyChecking=no',
     config.revshell.target
   ];
 
@@ -59,14 +61,13 @@ const execPlugin = async (args, event, config) => {
     const listenPort = await getListenPort();
     if (listenPort < 0) {
       await say('Unable to get listen port.', event.channel, config);
+      revShellLock = false;
       return;
     }
 
     sshRevCmd = sshBaseCmd.slice(0, sshBaseCmd.length - 1);
     sshRevCmd.push('-fNT');
     sshRevCmd.push('-R ' + listenPort + ':127.0.0.1:22');
-    sshRevCmd.push('-o UserKnownHostsFile=/dev/null');
-    sshRevCmd.push('-o StrictHostKeyChecking=no');
     sshRevCmd.push(sshBaseCmd[sshBaseCmd.length - 1]);
 
     res = runCommand(sshRevCmd.join(' '), true);
@@ -87,7 +88,8 @@ const getListenPort = async (output) => {
 
   if (!sshBaseCmd) return -1;
 
-  const res = await runCommand(sshBaseCmd.join(' ') + ' ss -antlp');
+  // const res = await runCommand(sshBaseCmd.join(' ') + ' ss -antlp');
+  const res = await runCommand(sshBaseCmd.join(' ') + ' netstat -antlp');
 
   if (!res.stdout) {
     console.log('Unable to get port list from remote.');
