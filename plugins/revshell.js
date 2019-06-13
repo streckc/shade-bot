@@ -104,7 +104,7 @@ const isShellRunning = async () => {
   const res = await runCommand('ps ax'); 
   if (!sshBaseCmd) {
     console.log('revshell no base shell');
-    return fasle;
+    return false;
   } else if (!res.stdout) {
     console.log('revshell unable to get processes');
     return true;
