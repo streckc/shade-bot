@@ -40,10 +40,7 @@ const isCapable = async (config) => {
 const execPlugin = async (args, event, config) => {
   let res = null;
 
-  if (!sshBaseCmd) {
-    console.log('revshell ssh command not built');
-    return;
-  }
+  if (!sshBaseCmd) { return; }
 
   if (revShellLock) {
     console.log('revshell locked');
@@ -86,7 +83,7 @@ const helpPlugin = async (event) => {
 }
 
 const getListenPort = async (output) => {
-  let port = 2202;
+  let basePort = 2202;
 
   if (!sshBaseCmd) return -1;
 
@@ -94,10 +91,16 @@ const getListenPort = async (output) => {
 
   if (!res.stdout) {
     console.log('Unable to get port list from remote.');
-    return;
+  } else {
+    for (let x = 0; x < 200 ; x++) {
+      if (!res.stdout.toString().includes(':' + String(basePort + x) + ' ')) {
+        return basePort + x;
+      }
+    }
+    console.log('Unable to find open port');
   }
 
-  return port;
+  return -1;
 }
 
 const isShellRunning = async () => {
