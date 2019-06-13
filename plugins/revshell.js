@@ -102,7 +102,10 @@ const getListenPort = async (output) => {
 
 const isShellRunning = async () => {
   const res = await runCommand('ps ax'); 
-  if (!res.stdout) {
+  if (!sshBaseCmd) {
+    console.log('revshell no base shell');
+    return fasle;
+  } else if (!res.stdout) {
     console.log('revshell unable to get processes');
     return true;
   } else if (res.stdout.toString().match(RegExp(sshBaseCmd.join(' ').substring(0,20)))) {
