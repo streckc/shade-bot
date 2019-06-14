@@ -12,6 +12,7 @@ const { loadPlugins, dispatchCommand } = require('./lib/commands');
 const { say, saveConnections } = require('./lib/slack');
 
 const config = readConfig(['config.json', '/etc/bot-config.json']);
+let botID = null;
 
 const rtm = new RTMClient(config.token, { logLevel: LogLevel.INFO });
 const web = new WebClient(config.token);
@@ -23,8 +24,18 @@ rtm.on('message', async (event) => {
 });
 
 rtm.on('ready', async (event) => {
+  const result = await web.im.list();
+  if (result.ok) {
+    result.ims.forEach((bot) => {
+      if (bot.user == rtm.activeUserId) {
+        botID = bot;
+      }
+    });
+  }
   loadPlugins('./plugins', config);
-  say('ready', '#bot_comm', config);
+  if (botID) {
+    say('ready', '#bot_comm', config);
+  }
 });
 
 (async () => { await rtm.start(); })();
