@@ -7,8 +7,10 @@ const isCapable = () => { return true; }
 const execPlugin = async (args, event, config) => {
   const used = process.memoryUsage();
   let isRevRunning = 'No';
+  let ignoreText = 'None';
 
   if (await isShellRunning()) isRevRunning = 'Yes';
+  if (ignoreList.length > 0) ignoreText = '<@' + ignoreList.join('>, <@') + '>';
 
   let text = '\n```  Voice : ' + config.voice;
   text += '\n  RevShell : ' + isRevRunning;
