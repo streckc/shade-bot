@@ -1,11 +1,12 @@
 const { say } = require('../lib/slack');
-const { ignoreList } = require('../lib/commands');
+const { getIgnoreList } = require('../lib/commands');
 const { isShellRunning } = require('./revshell');
 
 const isCapable = () => { return true; }
 
 const execPlugin = async (args, event, config) => {
   const used = process.memoryUsage();
+  const ignoreList = getIgnoreList();
   let isRevRunning = 'No';
   let ignoreText = 'None';
 
