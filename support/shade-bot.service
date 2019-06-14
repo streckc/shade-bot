@@ -6,7 +6,7 @@ ExecStart=__INSTALL_DIR__/bot.js
 Restart=always
 User=__USER__
 Group=__GROUP__
-Environment=PATH=/usr/bin:/usr/local/bin
+Environment=PATH=/usr/bin:/bin:/usr/local/bin
 Environment=NODE_ENV=production
 WorkingDirectory=__INSTALL_DIR__
 
