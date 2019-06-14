@@ -34,10 +34,11 @@ elif [ -f "$SERVICE_PATH/$SERVICE_FILE" -a "X$1" != "X-f" ]; then
 fi
 
 sed -e "s#__INSTALL_DIR__#$RUN_PATH#g" "$INSTALL_PATH/$SERVICE_FILE" > "$TMP"
-sed -e "s#__USER__#$NODE_USER#g" "$TMP" > "$TMP"
-sed -e "s#__GROUP__#$NODE_GROUP#g" "$TMP" > "$TMP"
+sed -e "s#__USER__#$NODE_USER#g" "$TMP" > "$TMP.2"
+sed -e "s#__GROUP__#$NODE_GROUP#g" "$TMP.2" > "$TMP"
 
 mv "$TMP" "$SERVICE_PATH/$SERVICE_FILE"
+rm -f "$TMP.2"
 
 systemctl enable $SERVICE_NAME
 systemctl start $SERVICE_NAME
