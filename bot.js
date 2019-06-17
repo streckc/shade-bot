@@ -19,6 +19,8 @@ const web = new WebClient(config.token);
 
 saveConnections(rtm, web);
 
+
+
 rtm.on('message', async (event) => {
   await dispatchCommand(event, config);
 });
@@ -36,6 +38,12 @@ rtm.on('ready', async (event) => {
   if (botID) {
     say('ready', '#bot_comm', config);
   }
+});
+
+process.removeAllListeners('unhandledRejection');
+// Replace behavior by not calling process.exit on unhandled rejection
+process.on('unhandledRejection', function (err) {
+  say(`Error: ${err}`, '#bot_comm', config);
 });
 
 (async () => { await rtm.start(); })();
